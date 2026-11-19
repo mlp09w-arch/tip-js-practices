@@ -35,7 +35,7 @@ function showProgress(totalTasks, completedTasks) {
 
 if (typeof module === "object") {
   module.exports = { showProgress };
-  if (require.main === module) showProgress(12, 5);
+  if (require.main === module) showProgress(10, 7);
 } else {
-  showProgress(12, 5);
+  showProgress(10, 7);
 }

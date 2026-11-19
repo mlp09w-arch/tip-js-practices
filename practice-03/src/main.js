@@ -1,4 +1,4 @@
-import { demoTasks } from "./data.js";
+import { demoTasks, variantTasks, variantNumber } from "./data.js";
 import { findTaskById, setTaskCompleted, removeTask } from "./task-service.js";
 import { getVisibleTasks } from "./task-selectors.js";
 import { renderTaskList, renderSummary, renderEmptyState } from "./task-view.js";
@@ -11,7 +11,11 @@ const elements = {
   message: document.querySelector("#operation-message"),
 };
 
-let currentTasks = demoTasks;
+const isVariant = new URLSearchParams(location.search).get("dataset") === "variant";
+let currentTasks = isVariant ? variantTasks : demoTasks;
+document.querySelector("#dataset-label").textContent = isVariant
+  ? `Индивидуальный вариант: ${variantNumber}`
+  : "Общий контрольный набор";
 let currentFilter = "all";
 
 function renderApp() {

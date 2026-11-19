@@ -1,1 +1,1 @@
-export { demoTasks } from "../../practice-02/src/data.js";
+export { demoTasks, variantTasks, variantNumber } from "../../practice-02/src/data.js";
