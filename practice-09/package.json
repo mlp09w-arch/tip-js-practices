@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "node src/server.js",
+    "start:kr3": "node src/server.js --kr3",
     "dev": "node --watch src/server.js",
     "test": "node --test checks/*.test.js",
     "check:unit": "node --test checks/unit.test.js",

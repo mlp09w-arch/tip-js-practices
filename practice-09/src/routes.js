@@ -1,8 +1,8 @@
-import { Router } from 'express';
+import { json, Router } from 'express';
 import { ApiError } from './errors.js';
-import { parseFilters, parsePositiveId } from './validation.js';
+import { parseFilters, parsePositiveId, validateTaskDraft } from './validation.js';
 
-export function createRouter(store) {
+export function createRouter(store, { enableTaskCreation = false } = {}) {
   const router = Router({ caseSensitive: true });
   router.get('/health', (req, res) => res.json({ data: { status: 'ok' } }));
 
@@ -26,9 +26,18 @@ export function createRouter(store) {
     res.json({ data: task });
   });
 
+  if (enableTaskCreation) {
+    router.post('/tasks', json({ limit: '16kb', inflate: false }), (req, res) => {
+      const categoryIds = new Set(store.listCategories().map(category => category.id));
+      const draft = validateTaskDraft(req.body, categoryIds);
+      const task = store.createTask(draft);
+      res.location(`/api/tasks/${task.id}`).status(201).json({ data: task });
+    });
+  }
+
   for (const path of ['/health', '/categories', '/tasks', '/tasks/:id']) {
     router.all(path, (req, res) => {
-      res.set('Allow', 'GET, HEAD, OPTIONS');
+      res.set('Allow', enableTaskCreation && path === '/tasks' ? 'GET, HEAD, POST, OPTIONS' : 'GET, HEAD, OPTIONS');
       throw new ApiError(405, 'METHOD_NOT_ALLOWED', 'Метод не поддерживается.');
     });
   }

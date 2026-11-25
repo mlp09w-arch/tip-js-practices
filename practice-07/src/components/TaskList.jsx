@@ -13,7 +13,7 @@ export default function TaskList({ tasks, categories, onToggle, onEdit, onDelete
               onToggle={onToggle} onEdit={onEdit} onDelete={onDelete} />
           ))}
         </ul>
-      ) : <p>По выбранным условиям задач нет.</p>}
+      ) : <p>Список задач пуст</p>}
     </section>
   );
 }

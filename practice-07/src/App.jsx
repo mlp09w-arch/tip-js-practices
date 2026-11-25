@@ -13,6 +13,7 @@ export default function App() {
   const [editingId, setEditingId] = useState(null);
   const [notice, setNotice] = useState("");
   const editingTask = tasks.find((task) => task.id === editingId) ?? null;
+  const filteredTasks = selectTasks(tasks, filters);
 
   function save(value) {
     if (editingId !== null && !editingTask) return false;
@@ -52,7 +53,7 @@ export default function App() {
       <TaskFilters filters={filters} categories={categories} onChange={setFilters} />
       <TaskForm key={editingId ?? "new"} categories={categories} initialTask={editingTask}
         onSave={save} onCancel={() => setEditingId(null)} />
-      <TaskList tasks={selectTasks(tasks, filters)} categories={categories}
+      <TaskList tasks={filteredTasks} categories={categories}
         onToggle={toggle} onEdit={setEditingId} onDelete={remove} />
     </main>
   );

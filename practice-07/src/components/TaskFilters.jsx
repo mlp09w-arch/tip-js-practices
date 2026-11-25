@@ -1,3 +1,9 @@
+const statuses = [
+  { value: "", label: "Все" },
+  { value: "false", label: "В работе" },
+  { value: "true", label: "Завершенные" },
+];
+
 export default function TaskFilters({ filters, categories, onChange }) {
   const change = (event) => {
     const { name, value } = event.target;
@@ -8,11 +14,14 @@ export default function TaskFilters({ filters, categories, onChange }) {
     <section aria-label="Фильтры">
       <h2>Фильтры</h2>
       <label>Поиск <input name="q" value={filters.q} onChange={change} /></label>
-      <label>Статус
-        <select name="completed" value={filters.completed} onChange={change}>
-          <option value="">Все</option><option value="false">В работе</option><option value="true">Выполнены</option>
-        </select>
-      </label>
+      <div className="status-filters" role="group" aria-label="Статус">
+        {statuses.map(({ value, label }) => (
+          <button key={value} type="button" aria-pressed={filters.completed === value}
+            onClick={() => onChange({ ...filters, completed: value })}>
+            {label}
+          </button>
+        ))}
+      </div>
       <label>Приоритет
         <select name="priority" value={filters.priority} onChange={change}>
           <option value="">Все</option><option value="low">Низкий</option>

@@ -12,6 +12,13 @@ export function notImplemented(name) {
 }
 export function errorHandler(error, req, res, next) {
   if (res.headersSent) return next(error);
+  if (error.type === 'entity.parse.failed') {
+    error = new ApiError(400, 'INVALID_JSON', 'Некорректный JSON.');
+  } else if (error.type === 'entity.too.large') {
+    error = new ApiError(413, 'PAYLOAD_TOO_LARGE', 'Тело запроса превышает 16 КиБ.');
+  } else if (error.type === 'charset.unsupported' || error.type === 'encoding.unsupported') {
+    error = new ApiError(415, 'UNSUPPORTED_MEDIA_TYPE', 'Неподдерживаемая кодировка.');
+  }
   // Express декодирует :id до вызова маршрута.
   const invalidUri = error instanceof URIError;
   const known = error instanceof ApiError;

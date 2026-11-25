@@ -47,3 +47,24 @@ export function parseFilters(searchParams) {
   }
   return filters;
 }
+
+export function validateTaskDraft(draft, categoryIds) {
+  if (!draft || typeof draft !== 'object' || Array.isArray(draft)) {
+    throw new ApiError(400, 'VALIDATION_ERROR', 'Ожидается JSON-объект задачи.');
+  }
+
+  const { title, priority, categoryId } = draft;
+  const normalizedTitle = typeof title === 'string' ? title.trim() : '';
+  const details = {};
+
+  if (normalizedTitle.length < 1 || normalizedTitle.length > 100) {
+    details.title = 'Название должно быть строкой длиной от 1 до 100 символов после trim().';
+  }
+  if (!PRIORITIES.has(priority)) details.priority = 'Выберите low, medium или high.';
+  if (!categoryIds.has(categoryId)) details.categoryId = 'Категория не найдена.';
+
+  if (Object.keys(details).length) {
+    throw new ApiError(400, 'VALIDATION_ERROR', 'Проверьте данные задачи.', details);
+  }
+  return { title: normalizedTitle, priority, categoryId };
+}
